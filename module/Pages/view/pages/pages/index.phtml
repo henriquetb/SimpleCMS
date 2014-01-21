@@ -2,14 +2,15 @@
     <div id="menu">
         <h4>PAGES</h4>
         
-        <?php foreach($pagesList as $page_id=>$page_name):?>
-            <a href='#' id='<?php echo $page_id?>' class='view_page'><?php echo $page_name?></a><br>
+        <div id="pagesList">
+        <?php foreach($pagesList as $page_id=>$page_title):?>
+            <a href='#' id='<?php echo $page_id?>' class='view_page'><?php echo $page_title?></a><br>
         <?php endforeach; ?>
-        
+        </div>
         <a href='#' id='addPage'>(add page)</a><br>
     </div>
 
     <div id="content">
-        
+    
     </div>
 </div>

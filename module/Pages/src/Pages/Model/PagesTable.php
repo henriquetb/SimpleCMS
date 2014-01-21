@@ -19,7 +19,7 @@ class PagesTable extends AbstractTableGateway {
 		$resultSet = $this->select('page_owner=0');//CHANGE: get from session
 		
 		foreach ($resultSet as $row) {
-		    $names[$row->page_id] = $row->page_name;
+		    $names[$row->page_id] = $row->page_title;
 		}
 		return $names;
 	}
@@ -39,4 +39,28 @@ class PagesTable extends AbstractTableGateway {
 		
 		return $page;
 	}
+	
+	public function savePage(Entity\Page $page) {
+		$data = array(
+				'page_owner' => $page->getPage_owner(),
+				'page_title' => $page->getPage_title(),
+				'page_is_home' => $page->getPage_is_home(),
+				'page_content' => $page->getPage_content(),
+		);
+	
+		$page_id = (int) $page->getPage_id();
+		if ($page_id == 0) {
+			if (!$this->insert($data))
+				return false;
+			return $this->getLastInsertValue();
+		}
+		elseif ($this->getPage($page_id)) {
+			if (!$this->update($data, array('page_id' => $page_id)))
+				return false;
+			return $page_id;
+		}
+		else
+			return false;
+	}
+	
 }
