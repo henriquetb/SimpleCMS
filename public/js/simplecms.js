@@ -11,8 +11,10 @@ jQuery(function($) {
                     if(data.response == true){
                     	$('#content').html("<h1>"+data.page.page_title+"</h1><hr>");
                     	$('#content').append(data.page.page_content);
-                    	$('#content').append("<hr><a href='#' id='"+data.page.page_id+"' class='edit_page'>(edit page)</a><br>");
-                    	$('.edit_page').data("page", data.page);
+                    	if (data.userName!="" && data.userName!=null){
+	                    	$('#content').append("<hr><a href='#' id='"+data.page.page_id+"' class='edit_page'>(edit page)</a><br>");
+	                    	$('.edit_page').data("page", data.page);
+                    	}
                     	// print success message
                     } else {
                         // print error message
@@ -70,14 +72,6 @@ jQuery(function($) {
 		return null;
 	};
 	
-	/*
-	 * Menu item onclick event
-	 * */
-    $("#menu").on('click', 'a.view_page',function(event){
-    	event.preventDefault();
-        var view_id = $(this).attr('id');
-        showPage(view_id);
-    });
 
     /*
      * Add/Edit page submit button onclick event
@@ -120,7 +114,8 @@ jQuery(function($) {
                 if(data.response == true){
                 	//insert page in the menu
                 	if (page_id == 0)
-                		$('#pagesList').append("<a href='#' id='"+data.new_page_id+"' class='view_page'>"+title+"</a><br>");
+                		$('#pagesList').append("<a href='#' id='"+data.page_id+"' class='view_page'>"+title+"</a><br>");
+                		
                 	else{
                 		$('#menu a#'+page_id).html(title);
                 	}
@@ -133,14 +128,22 @@ jQuery(function($) {
                 }
             }, 'json');
     });
-    
+
+	/*
+	 * Menu item onclick event
+	 * */
+    $("#menu").on('click', 'a.view_page',function(event){
+    	event.preventDefault();
+        var view_id = $(this).attr('id');
+        showPage(view_id);
+    });
+
     /*
      * Add Page onclick event
      * */
-    $('#addPage').on('click', function(event){
+    $("#menu").on('click', 'a.add_page', function(event){
     	event.preventDefault();
     	loadForm(null);
-    	
     });
 
     /*
@@ -152,6 +155,33 @@ jQuery(function($) {
     	loadForm(page);
     });
     
-    
-    
+    /*
+     * Login action
+     * */
+    $('#menu').on('click', 'button.login', function(event){
+    	event.preventDefault();
+    	//validates login fields
+    	//post the data
+    	$.post("pages/login", {
+        	username: $('#username').val(),
+        	password: $('#password').val(),
+        }, function(data){
+                if(data.response == true){
+                	//removes the login form
+                	$('#loginForm').remove();
+                	//adds the add page to the menu
+                	//$('#menu').append("<a href='#' id='addPage'>(add page)</a><br>");
+                	$('#menu').append("<a href='#' id='add_page' class='add_page'>(add page)</a><br>");
+                	
+                	//adds the edit page to the content
+                	
+                	// print success message
+                } else {
+                    // print error message
+                	
+                	
+                    alert('Login failed.');
+                }
+            }, 'json');
+    });
 });

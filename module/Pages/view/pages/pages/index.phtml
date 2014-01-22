@@ -1,16 +1,38 @@
 <div id="wrap">
     <div id="menu">
-        <h4>PAGES</h4>
+        <h4>PAGES 
+        <?php if ($home){?>
+        <a href="#" class='view_page' id='<?php echo $home->page_id?>'>(home)</a>
+        <?php }?>
+        </h4>
         
         <div id="pagesList">
         <?php foreach($pagesList as $page_id=>$page_title):?>
             <a href='#' id='<?php echo $page_id?>' class='view_page'><?php echo $page_title?></a><br>
         <?php endforeach; ?>
         </div>
-        <a href='#' id='addPage'>(add page)</a><br>
+        
+        <?php if ($userName==""){?>
+        <div id="loginForm">
+            <form role='form' id="frmL">
+    	       <div class='form-group'>
+    	           <input type='text' class='username form-control' name='username' id="username" placeholder='Username'>
+    	       </div>
+    	       <div class='form-group'>
+    	           <input type='password' class='password form-control' name='password' id="password" placeholder='Password'>
+    	       </div>
+    	       <button type='button' id='login' class='login btn btn-default'>Login</button>
+    	   </form>
+        </div>
+        <?php }else{?>
+            <a href='#' id='add_page' class='add_page'>(add page)</a><br>
+        <?php }?>
     </div>
 
     <div id="content">
-    
+        <?php if ($home){?>
+            <h1><?php echo $home->page_title?></h1><hr>
+            <?php echo $home->page_content?>
+        <?php }?>
     </div>
 </div>

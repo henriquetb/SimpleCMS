@@ -24,6 +24,21 @@ class PagesTable extends AbstractTableGateway {
 		return $names;
 	}
 	
+	public function getHome() {
+		$row = $this->select(array('page_is_home' => 1))->current();
+		if (!$row)
+			return false;
+		
+		$page = new Entity\Page(array(
+				'page_id' => $row->page_id,
+				'page_owner' => $row->page_owner,
+				'page_title' => $row->page_title,
+				'page_is_home' => $row->page_is_home,
+				'page_content' => $row->page_content,
+		));
+		return $page;
+	}
+	
 	public function getPage($page_id) {
 		$row = $this->select(array('page_id' => (int) $page_id))->current();
 		if (!$row)
@@ -39,6 +54,22 @@ class PagesTable extends AbstractTableGateway {
 		
 		return $page;
 	}
+	public function getPageByTitle($page_title) {
+		$row = $this->select(array('page_title' => $page_title))->current();
+		if (!$row)
+			return false;
+	
+		$page = new Entity\Page(array(
+				'page_id' => $row->page_id,
+				'page_owner' => $row->page_owner,
+				'page_title' => $row->page_title,
+				'page_is_home' => $row->page_is_home,
+				'page_content' => $row->page_content,
+		));
+	
+		return $page;
+	}
+	
 	
 	public function savePage(Entity\Page $page) {
 		$data = array(

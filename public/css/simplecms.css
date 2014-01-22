@@ -1,1 +1,23 @@
 @CHARSET "UTF-8";
+
+#wrap{
+	position: relative;
+}
+#menu{	
+	padding: 10px 10px 10px 10px;
+	width: 150px;
+	border-right: 1px dashed #6699CC;
+	vertical-align: top;
+    position: absolute;	
+}
+#content{
+	margin-left: 170px;	
+	padding: 10px 20px 10px 20px;
+}
+
+#loginForm{
+	margin-top: 30px;	
+}
+#loginForm input{
+	width: 120px;
+}
