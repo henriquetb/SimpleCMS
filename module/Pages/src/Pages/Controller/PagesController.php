@@ -3,6 +3,7 @@ namespace Pages\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Pages\Model\Entity\Page;
 
 class PagesController extends AbstractActionController {
     
@@ -22,6 +23,10 @@ class PagesController extends AbstractActionController {
 	    ));
 	}
 
+	public function validatePage($page){
+		return true;
+	}
+	
 	public function addAction(){
 	    $request = $this->getRequest();
 	    $response = $this->getResponse();
@@ -39,12 +44,15 @@ class PagesController extends AbstractActionController {
 	        //size of inputs
 	        //unique title
 	        //sanitize content
+	        if (!$this->validatePage($new_page))
+	           return $response->setContent(\Zend\Json\Json::encode(array('response' => false)));
+	        
 	        
 	        
 	    	if (!$page_id = $this->getPagesTable()->savePage($new_page))
 	    		$response->setContent(\Zend\Json\Json::encode(array('response' => false)));
 	    	else {
-	    		$response->setContent(\Zend\Json\Json::encode(array('response' => true, 'new_page_id' => $page_id, '')));
+	    		$response->setContent(\Zend\Json\Json::encode(array('response' => true, 'page_id' => $page_id)));
 	    	}
 	    }
 	    return $response;
@@ -54,6 +62,31 @@ class PagesController extends AbstractActionController {
 	}
 
 	public function updateAction(){
+	    $request = $this->getRequest();
+	    $response = $this->getResponse();
+	    if ($request->isPost()) {
+	    	$post_data = $request->getPost();
+	    	$page_id = $post_data['page_id'];
+	    	
+            $page = $this->getPagesTable()->getPage($page_id);
+            
+            if (!$page)
+                return $response->setContent(\Zend\Json\Json::encode(array('response' => false, 'error' => 'No Page found.')));
+            
+            $page->setPage_title($post_data['page_title']);
+            $page->setPage_is_home($post_data['page_is_home']);
+            $page->setPage_content($post_data['page_content']);
+            
+	    	if (!$this->validatePage($page))
+	    		return $response->setContent(\Zend\Json\Json::encode(array('response' => false, 'error' => 'Wrong data.')));
+	    	
+	    	if (!$this->getPagesTable()->savePage($page))
+	    		$response->setContent(\Zend\Json\Json::encode(array('response' => false)));
+	    	else {
+	    		$response->setContent(\Zend\Json\Json::encode(array('response' => true, 'page_id' => $page->getPage_id())));
+	    	}
+	    }
+	    return $response;
 	}
 
 	public function showAction(){
@@ -65,10 +98,13 @@ class PagesController extends AbstractActionController {
             if (!$page = $this->getPagesTable()->getPage($page_id))
                 $response->setContent(\Zend\Json\Json::encode(array('response' => false)));
             else {
-                $response->setContent(\Zend\Json\Json::encode(array('response' => true, 'view_page_content' => $page->getPage_content())));
+                $response->setContent(\Zend\Json\Json::encode(array('response' => true, 
+                    'page' => $page->toArray()
+                )));
             }
         }
         return $response;
 	}
+	
 	
 }

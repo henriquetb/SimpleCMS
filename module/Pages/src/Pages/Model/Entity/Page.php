@@ -115,6 +115,16 @@ class Page {
 		$this->_page_content = $_page_content;
         return $this;
 	}
+	
+	public function toArray(){
+		$pageArray = array();
+		$pageArray["page_id"] = $this->_page_id;
+		$pageArray["page_owner"] = $this->_page_owner;
+		$pageArray["page_title"] = $this->_page_title;
+		$pageArray["page_is_home"] = $this->_page_is_home;
+		$pageArray["page_content"] = $this->_page_content;
+		return $pageArray;
+	}
 
 
 	
